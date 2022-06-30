@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
@@ -29,6 +29,7 @@ const Login = () => {
         if (data.acknowledged) {
           setEmailError("");
           setPasswordError("");
+          localStorage.setItem('UserCredential', JSON.stringify({email,token:data.token}))
           navigate("/");
         } else {
           if (data.mgs.includes("email")) {
