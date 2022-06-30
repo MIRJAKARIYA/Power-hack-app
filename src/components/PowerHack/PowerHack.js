@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AllBilling from "./AllBilling";
+import Header from "./Header";
 
 const PowerHack = () => {
 
@@ -22,6 +24,7 @@ const PowerHack = () => {
     .then(res => res.json())
     .then(data => {
       if(!(data.authorization)){
+        localStorage.removeItem("UserCredential")
         navigate('/login')
       }
     })
@@ -35,8 +38,9 @@ const PowerHack = () => {
 
   return (
     <div>
-      <h1>I am power hack</h1>
-      <button className="btn btn-primary mt-4" onClick={handleLogout}>Logout</button>
+      <Header></Header>
+      <AllBilling></AllBilling>
+      
     </div>
   );
 };
