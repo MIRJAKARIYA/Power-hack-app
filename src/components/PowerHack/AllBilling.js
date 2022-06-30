@@ -7,12 +7,13 @@ const AllBilling = () => {
   const [updateId, setUpdateId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [billingList, setBillingList] = useState([])
+  const [reload, setReload] = useState(false)
 
   useEffect(() => {
     fetch("http://localhost:5000/billing-list")
       .then((res) => res.json())
       .then((data) => setBillingList(data));
-  }, []);
+  }, [reload]);
 
   return (
     <>
@@ -63,6 +64,8 @@ const AllBilling = () => {
 
       {deleteId && (
         <DeleteBillingModal
+          reload={reload}
+          setReload={setReload}
           deleteId={deleteId}
           setDeleteId={setDeleteId}
         ></DeleteBillingModal>
