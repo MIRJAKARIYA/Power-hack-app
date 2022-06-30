@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -14,19 +14,39 @@ const Register = () => {
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const navigate = useNavigate()
 
-  const [passError, setPassError] = useState(false);
-  const [confirmPassError, setConfirmPassError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const passRef = useRef();
 
-  const navigate = useNavigate();
+  const [existsError, setExistsError] = useState('');
+
 
   const onSubmit = async (data) => {
     const name = data.name;
-    const password = passRef.current.value;
-    setPassError(false);
-    setConfirmPassError(false);
+    const email = data.email
+    const password = data.password;
+
+
+    fetch('http://localhost:5000/register',{
+      method:'POST',
+      headers:{
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({name, email,password}),
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.acknowledged){
+        setExistsError('')
+        navigate('/login')
+      }
+      else{
+        setExistsError('*'+data.mgs)
+      }
+    })
+
+    
+
     
   };
   return (
@@ -66,13 +86,8 @@ const Register = () => {
                       {...register("email")}
                       required
                     />
+                    <p className="text-xs text-red-700"> {existsError}</p>
                   </div>
-                  {errors.email?.type === "required" && (
-                    <div className="ml-2 text-xs flex items-center text-red-700 font-semibold">
-                      <AiOutlineWarning />{" "}
-                      <span className="ml-1">{errors.email.message}</span>
-                    </div>
-                  )}
                   <div className="form-control relative">
                     <label className="label">
                       <span className="label-text">Password</span>
@@ -81,7 +96,7 @@ const Register = () => {
                       type={isVisible ? "text" : "password"}
                       placeholder="password"
                       className="input input-bordered"
-                      ref={passRef}
+                      {...register("password")}
                       required
                     />
                     <p
@@ -92,31 +107,6 @@ const Register = () => {
                       {isVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
                     </p>
                   </div>
-                  {passError && (
-                    <div className="ml-2 text-xs flex items-center text-red-700 font-semibold">
-                      <AiOutlineWarning />{" "}
-                      <span className="ml-1">Password is not valid</span>
-                    </div>
-                  )}
-
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Confirm Password</span>
-                    </label>
-                    <input
-                      type={isVisible ? "text" : "password"}
-                      placeholder="confirm password"
-                      className="input input-bordered"
-                      {...register("confirmPassword")}
-                      required
-                    />
-                  </div>
-                  {confirmPassError && (
-                    <div className="ml-2 text-xs flex items-center text-red-700 font-semibold">
-                      <AiOutlineWarning />{" "}
-                      <span className="ml-1">Password didn't match</span>
-                    </div>
-                  )}
 
                   <div className="form-control mt-6">
                     <button className="btn btn-primary" type="submit">
@@ -128,7 +118,7 @@ const Register = () => {
 
             </div>
             <p className="text-center underline text-blue-700 mt-3">
-              <Link to="/">already have an account?</Link>
+              <Link to="/login">already have an account?</Link>
             </p>
           </div>
         </div>

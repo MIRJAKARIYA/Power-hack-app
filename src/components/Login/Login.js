@@ -1,27 +1,45 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 import { useForm } from "react-hook-form";
 
-
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const emailRef = useRef();
-
-  let location = useLocation();
-
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const [isVisible, setIsVisible] = useState(false);
 
-
-
   const onSubmit = (data) => {
-    const email = emailRef.current.value;
+    const email = data.email;
     const password = data.password;
 
+    fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          setEmailError("");
+          setPasswordError("");
+          navigate("/");
+        } else {
+          if (data.mgs.includes("email")) {
+            setPasswordError("");
+            setEmailError(data.mgs);
+          } else {
+            setEmailError("");
+            setPasswordError(data.mgs);
+          }
+        }
+      });
   };
 
   return (
@@ -38,13 +56,11 @@ const Login = () => {
                   type="email"
                   placeholder="email"
                   className="input input-bordered"
-                  ref={emailRef}
+                  {...register("email")}
                   required
                 />
               </div>
-              <small className="text-red-700">
-                {/* {error?.message?.includes("not-found") ? "*user not found" : ""} */}
-              </small>
+              <small className="text-red-700">{emailError} </small>
               <div className="form-control relative">
                 <label className="label">
                   <span className="label-text">Password</span>
@@ -64,9 +80,7 @@ const Login = () => {
                   {isVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
                 </p>
               </div>
-              <small className="text-red-700">
-                {/* {error?.message?.includes("password") ? "*wrong password" : ""} */}
-              </small>
+              <small className="text-red-700">{passwordError}</small>
               <div className="form-control mt-6">
                 <button className="btn btn-primary" type="submit">
                   Login
