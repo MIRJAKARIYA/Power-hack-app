@@ -12,7 +12,7 @@ const SingleBill = ({bill, setUpdateId, setDeleteId, addUpModal, setAddUpModal }
       <td>{FullName}</td>
       <td>{Email}</td>
       <td>{Phone}</td>
-      <td>{PaidAmount}</td>
+      <td>{'$'+PaidAmount}</td>
       <td>
         <button
           className="btn btn-accent btn-xs"
