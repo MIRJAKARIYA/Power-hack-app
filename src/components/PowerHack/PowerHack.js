@@ -7,7 +7,6 @@ const PowerHack = () => {
 
   useEffect(() => {
     const cred = localStorage.getItem("UserCredential");
-    console.log(cred);
     if (cred) {
       const userCredential = JSON.parse(cred);
       const email = userCredential?.email;

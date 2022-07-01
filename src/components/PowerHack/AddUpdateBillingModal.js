@@ -158,7 +158,7 @@ const AddUpdateBillingModal = ({
               <input
                 type="text"
                 placeholder="Enter Full Name"
-                class="input input-bordered input-primary w-full mb-2"
+                className="input input-bordered input-primary w-full mb-2"
                 value={fname || ""}
                 onChange={handleName}
               />
@@ -169,7 +169,7 @@ const AddUpdateBillingModal = ({
               <input
                 type="email"
                 placeholder="Enter Email"
-                class="input input-bordered input-primary w-full mb-2"
+                className="input input-bordered input-primary w-full mb-2"
                 value={email}
                 onChange={handleEmail}
               />
@@ -179,7 +179,7 @@ const AddUpdateBillingModal = ({
               <input
                 type="number"
                 placeholder="Enter Phone Number"
-                class="input input-bordered input-primary w-full mb-2"
+                className="input input-bordered input-primary w-full mb-2"
                 value={phone}
                 onChange={handlePhone}
               />
@@ -189,7 +189,7 @@ const AddUpdateBillingModal = ({
               <input
                 type="number"
                 placeholder="Enter Paid Amount"
-                class="input input-bordered input-primary w-full mb-1"
+                className="input input-bordered input-primary w-full mb-1"
                 value={payAm}
                 onChange={handleAmount}
               />
