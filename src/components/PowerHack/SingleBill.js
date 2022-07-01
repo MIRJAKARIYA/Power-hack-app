@@ -18,7 +18,7 @@ const SingleBill = ({bill, setUpdateId, setDeleteId, addUpModal, setAddUpModal }
           className="btn btn-accent btn-xs"
           onClick={handleUpdate}
         >
-          upt
+          edit
         </button>
         <button
           onClick={() => setDeleteId(_id)}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddUpdateBillingModal = ({
   api,
@@ -9,10 +10,9 @@ const AddUpdateBillingModal = ({
   addUpModal,
   setAddUpModal,
   billingList,
-  setBillingList
-
+  setBillingList,
 }) => {
-  console.log(billingList)
+  const navigate = useNavigate();
   //value states
   const [fname, setFName] = useState(updateId.FullName);
   const [email, setEmail] = useState(updateId.Email);
@@ -24,23 +24,32 @@ const AddUpdateBillingModal = ({
   const [emailErr, setEmailErr] = useState("* Email is required");
   const [phoneErr, setPhoneErr] = useState("* Phone Number is required");
   const [amountErr, setAmountErr] = useState("* Paid Amout is required");
-  useEffect(()=>{
-    if(updateId.FullName){
-      setNameErr('')
-      setEmailErr('')
-      setPhoneErr('')
-      setAmountErr('')
+  useEffect(() => {
+    if (updateId.FullName) {
+      setNameErr("");
+      setEmailErr("");
+      setPhoneErr("");
+      setAmountErr("");
     }
-  },[updateId])
+  }, [updateId]);
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const userCredential = JSON.parse(localStorage.getItem("UserCredential"));
-    const jwtToken = userCredential?.token; 
+    const jwtToken = userCredential?.token;
 
     if (!nameErr && !emailErr && !phoneErr && !amountErr) {
-      if(updateId === 'add-Bill'){
-        setBillingList([...billingList,{FullName:fname, Email:email,Phone:phone,PaidAmount:payAm,_id:''}])
+      if (updateId === "add-Bill") {
+        setBillingList([
+          ...billingList,
+          {
+            FullName: fname,
+            Email: email,
+            Phone: phone,
+            PaidAmount: payAm,
+            _id: "",
+          },
+        ]);
         fetch("http://localhost:5000/api/add-billing", {
           method: "POST",
           headers: {
@@ -54,18 +63,20 @@ const AddUpdateBillingModal = ({
             PaidAmount: payAm,
           }),
         })
-          .then((res) => res.json())
-          .then((data) => {
-            if(data.acknowledged){
-              setReload(!reload)
-              setAddUpModal(!addUpModal)
+          .then((res) => {
+            if (res.status === 401 || res.status === 403) {
+              localStorage.removeItem("UserCredential");
+              navigate("/login");
             }
-            else{
-              console.log('Failed')
+            return res.json();
+          })
+          .then((data) => {
+            if (data.acknowledged) {
+              setReload(!reload);
+              setAddUpModal(!addUpModal);
             }
           });
-      }
-      else{
+      } else {
         fetch(`http://localhost:5000/api/update-billing/${updateId._id}`, {
           method: "PUT",
           headers: {
@@ -79,15 +90,17 @@ const AddUpdateBillingModal = ({
             PaidAmount: payAm,
           }),
         })
-          .then((res) => res.json())
-          .then((data) => {
-            if(data.acknowledged){
-              
-              setAddUpModal(!addUpModal)
-              setReload(!reload)
+          .then((res) => {
+            if (res.status === 401 || res.status === 403) {
+              localStorage.removeItem("UserCredential");
+              navigate("/login");
             }
-            else{
-              console.log('Failed')
+            return res.json();
+          })
+          .then((data) => {
+            if (data.acknowledged) {
+              setAddUpModal(!addUpModal);
+              setReload(!reload);
             }
           });
       }
@@ -109,7 +122,6 @@ const AddUpdateBillingModal = ({
     if (e.target.value === "") {
       setEmailErr("* Email is required");
     }
-
   };
 
   const handlePhone = (e) => {
@@ -135,16 +147,17 @@ const AddUpdateBillingModal = ({
       <input type="checkbox" id="my-modal-7" className="modal-toggle" />
       <div className="modal modal-open sm:modal-middle">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">{updateId._id}</h3>
+          <h3 className="font-bold text-center text-lg mb-3">
+            {updateId === "add-Bill" ? "Add New Bill" : "Edit The Bill"}
+          </h3>
           <div className="">
             <form action="" onSubmit={handleSubmit}>
               <input
                 type="text"
                 placeholder="Enter Full Name"
                 class="input input-bordered input-primary w-full mb-2"
-                value={fname || ''}
+                value={fname || ""}
                 onChange={handleName}
-
               />
               <p className="text-xs font-semibold text-red-700 mb-2">
                 {nameErr}
@@ -156,7 +169,6 @@ const AddUpdateBillingModal = ({
                 class="input input-bordered input-primary w-full mb-2"
                 value={email}
                 onChange={handleEmail}
-
               />
               <p className="text-xs font-semibold text-red-700 mb-2">
                 {emailErr}
@@ -167,7 +179,6 @@ const AddUpdateBillingModal = ({
                 class="input input-bordered input-primary w-full mb-2"
                 value={phone}
                 onChange={handlePhone}
-
               />
               <p className="text-xs font-semibold text-red-700 mb-2">
                 {phoneErr}
@@ -178,18 +189,17 @@ const AddUpdateBillingModal = ({
                 class="input input-bordered input-primary w-full mb-1"
                 value={payAm}
                 onChange={handleAmount}
-
               />
               <p className="text-xs font-semibold text-red-700 mb-2">
                 {amountErr}
               </p>
               <div className="modal-action">
-                <button type="submit" className="btn">
-                  {updateId==="add-Bill"?'Add':'Update'}
+                <button type="submit" className="btn btn-primary">
+                  {updateId === "add-Bill" ? "Add" : "Update"}
                 </button>
                 <button
                   onClick={() => setAddUpModal(!addUpModal)}
-                  className="btn"
+                  className="btn btn-error"
                 >
                   cancel
                 </button>

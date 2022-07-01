@@ -6,7 +6,7 @@ import ReactPaginate from "react-paginate";
 
 import SingleBill from "./SingleBill";
 
-const AllBilling = () => {
+const AllBilling = ({handleLogout}) => {
   const [updateId, setUpdateId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [billingList, setBillingList] = useState([]);
@@ -64,7 +64,7 @@ const AllBilling = () => {
 
   return (
     <>
-      <Header billingList={billingList}></Header>
+      <Header handleLogout={handleLogout} billingList={billingList}></Header>
       <div className="max-w-[1200px] mx-auto">
         <div className="flex items-center justify-between mt-10 rounded-md py-2 px-4 mb-5 bg-gray-300">
           <div className="flex-1 flex items-center gap-8">

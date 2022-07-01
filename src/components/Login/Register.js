@@ -50,6 +50,7 @@ const Register = () => {
   };
   return (
     <>
+    <h1 className="mt-20 text-xl font-semibold text-center text-primary">Create new account if you don't have one.</h1>
       <div className="my-10">
         <div className="">
           <div>

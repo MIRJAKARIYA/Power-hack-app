@@ -1,8 +1,8 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 const DeleteBillingModal = ({ deleteId, setDeleteId, reload, setReload }) => {
 
-
+  const navigate = useNavigate();
   const handleDelete = () =>{
     const userCredential = JSON.parse(localStorage.getItem("UserCredential"));
     const jwtToken = userCredential?.token;
@@ -12,11 +12,18 @@ const DeleteBillingModal = ({ deleteId, setDeleteId, reload, setReload }) => {
         authorization: `Bearer ${jwtToken}`
       }
     })
-    .then(res => res.json())
+    .then(res => {
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem("UserCredential");
+        navigate("/login");
+      }
+      return res.json();
+    })
     .then(data=>{
-      console.log(data)
-      setDeleteId("")
-      setReload(!reload)
+        if(data.acknowledged){
+          setDeleteId("")
+          setReload(!reload)
+        }
     })
   }
   return (
