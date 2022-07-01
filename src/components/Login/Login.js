@@ -17,7 +17,7 @@ const Login = () => {
     const email = data.email;
     const password = data.password;
 
-    fetch("http://localhost:5000/api/login", {
+    fetch("https://hydro-moose-53627.herokuapp.com/api/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -29,7 +29,10 @@ const Login = () => {
         if (data.acknowledged) {
           setEmailError("");
           setPasswordError("");
-          localStorage.setItem('UserCredential', JSON.stringify({token:data.token,email}))
+          localStorage.setItem(
+            "UserCredential",
+            JSON.stringify({ token: data.token, email })
+          );
           navigate("/");
         } else {
           if (data.mgs.includes("email")) {
@@ -45,7 +48,9 @@ const Login = () => {
 
   return (
     <>
-    <h1 className="mt-20 text-xl font-semibold text-center text-primary">You must Login to use the App</h1>
+      <h1 className="mt-20 text-xl font-semibold text-center text-primary">
+        You must Login to use the App
+      </h1>
       <div className="flow-root my-10">
         <div className="card mx-auto flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
           <form onSubmit={handleSubmit(onSubmit)}>

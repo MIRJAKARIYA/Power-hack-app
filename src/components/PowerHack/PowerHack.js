@@ -13,14 +13,17 @@ const PowerHack = () => {
       const email = userCredential?.email;
       const jwtToken = userCredential?.token;
 
-      fetch(`http://localhost:5000/api/isValidUser?email=${email}`, {
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${jwtToken}`,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({ message: "Token send" }),
-      })
+      fetch(
+        `https://hydro-moose-53627.herokuapp.com/api/isValidUser?email=${email}`,
+        {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${jwtToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({ message: "Token send" }),
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           if (!data.authorization) {

@@ -50,7 +50,7 @@ const AddUpdateBillingModal = ({
             _id: "",
           },
         ]);
-        fetch("http://localhost:5000/api/add-billing", {
+        fetch("https://hydro-moose-53627.herokuapp.com/api/add-billing", {
           method: "POST",
           headers: {
             authorization: `Bearer ${jwtToken}`,
@@ -77,19 +77,22 @@ const AddUpdateBillingModal = ({
             }
           });
       } else {
-        fetch(`http://localhost:5000/api/update-billing/${updateId._id}`, {
-          method: "PUT",
-          headers: {
-            authorization: `Bearer ${jwtToken}`,
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            FullName: fname,
-            Email: email,
-            Phone: phone,
-            PaidAmount: payAm,
-          }),
-        })
+        fetch(
+          `https://hydro-moose-53627.herokuapp.com/api/update-billing/${updateId._id}`,
+          {
+            method: "PUT",
+            headers: {
+              authorization: `Bearer ${jwtToken}`,
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              FullName: fname,
+              Email: email,
+              Phone: phone,
+              PaidAmount: payAm,
+            }),
+          }
+        )
           .then((res) => {
             if (res.status === 401 || res.status === 403) {
               localStorage.removeItem("UserCredential");

@@ -14,43 +14,39 @@ const Register = () => {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const [existsError, setExistsError] = useState('');
-
+  const [existsError, setExistsError] = useState("");
 
   const onSubmit = async (data) => {
     const name = data.name;
-    const email = data.email
+    const email = data.email;
     const password = data.password;
 
-
-    fetch('http://localhost:5000/api/registration',{
-      method:'POST',
-      headers:{
+    fetch("https://hydro-moose-53627.herokuapp.com/api/registration", {
+      method: "POST",
+      headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({name, email,password}),
+      body: JSON.stringify({ name, email, password }),
     })
-    .then(res => res.json())
-    .then(data => {
-      if(data.acknowledged){
-        setExistsError('')
-        navigate('/login')
-      }
-      else{
-        setExistsError('*'+data.mgs)
-      }
-    })
-
-
-    
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          setExistsError("");
+          navigate("/login");
+        } else {
+          setExistsError("*" + data.mgs);
+        }
+      });
   };
   return (
     <>
-    <h1 className="mt-20 text-xl font-semibold text-center text-primary">Create new account if you don't have one.</h1>
+      <h1 className="mt-20 text-xl font-semibold text-center text-primary">
+        Create new account if you don't have one.
+      </h1>
       <div className="my-10">
         <div className="">
           <div>
@@ -115,7 +111,6 @@ const Register = () => {
                   </div>
                 </div>
               </form>
-
             </div>
             <p className="text-center underline text-blue-700 mt-3">
               <Link to="/login">already have an account?</Link>

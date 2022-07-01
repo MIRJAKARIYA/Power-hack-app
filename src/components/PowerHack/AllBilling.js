@@ -6,7 +6,7 @@ import ReactPaginate from "react-paginate";
 
 import SingleBill from "./SingleBill";
 
-const AllBilling = ({handleLogout}) => {
+const AllBilling = ({ handleLogout }) => {
   const [updateId, setUpdateId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [billingList, setBillingList] = useState([]);
@@ -21,7 +21,7 @@ const AllBilling = ({handleLogout}) => {
   const [pageData, setPageData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/billing-list")
+    fetch("https://hydro-moose-53627.herokuapp.com/api/billing-list")
       .then((res) => res.json())
       .then((data) => setBillingList(data));
   }, [reload]);
@@ -77,9 +77,14 @@ const AllBilling = ({handleLogout}) => {
                 onChange={handleSearch}
                 value={searchText}
               />
-              {
-                searchText && <button onClick={()=>setSearchText('')} className="absolute top-2 right-2 font-bold text-orange-700">X</button>
-              }
+              {searchText && (
+                <button
+                  onClick={() => setSearchText("")}
+                  className="absolute top-2 right-2 font-bold text-orange-700"
+                >
+                  X
+                </button>
+              )}
             </div>
           </div>
           <div className="flex-1 text-right">
