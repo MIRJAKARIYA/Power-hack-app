@@ -2,21 +2,23 @@ import React, { useEffect, useState } from "react";
 import AddUpdateBillingModal from "./AddUpdateBillingModal";
 import DeleteBillingModal from "./DeleteBillingModal";
 import Header from "./Header";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 
 import SingleBill from "./SingleBill";
 
 const AllBilling = () => {
- 
   const [updateId, setUpdateId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [billingList, setBillingList] = useState([]);
   const [reload, setReload] = useState(false);
   const [addUpModal, setAddUpModal] = useState(false);
-  const [api, setApi] = useState('');
+  const [api, setApi] = useState("");
   const [pageCount, setPageCount] = useState(0);
 
-  const [pageData, setPageData] = useState([])
+  const [searchedData, setSearchedData] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  const [pageData, setPageData] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/billing-list")
@@ -24,29 +26,45 @@ const AllBilling = () => {
       .then((data) => setBillingList(data));
   }, [reload]);
 
-  useEffect(()=>{
-    const x = pageCount*10;
-    const y = x+10;
-    const tenData= billingList.slice(x,y);
-    setPageData(tenData)
+  useEffect(() => {
+    const x = pageCount * 10;
+    const y = x + 10;
+    const tenData = searchedData.slice(x, y);
+    setPageData(tenData);
+  }, [pageCount, searchedData]);
 
-  },[pageCount,billingList])
+  useEffect(() => {
+    if (searchText === "") {
+      setSearchedData(billingList);
+    } else {
+      const searched = billingList.filter(
+        (bill) =>
+          bill.FullName.toLowerCase().includes(searchText.toLowerCase()) ||
+          bill.Phone.toLowerCase().includes(searchText.toLowerCase()) ||
+          bill.Email.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setSearchedData(searched);
+    }
+  }, [searchText, billingList, searchedData]);
 
+  const handleAddNewBill = () => {
+    setAddUpModal(!addUpModal);
+    setUpdateId("add-Bill");
+    setApi("");
+  };
 
-  const handleAddNewBill = () =>{
-    setAddUpModal(!addUpModal)
-    setUpdateId('add-Bill')
-    setApi('')
-  }
+  const handlePageClick = (data) => {
+    console.log(data.selected);
+    setPageCount(data.selected);
+  };
 
-  const handlePageClick = (data) =>{
-    console.log(data.selected)
-    setPageCount(data.selected)
-  }
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <>
-    <Header billingList={billingList}></Header>
+      <Header billingList={billingList}></Header>
       <div className="max-w-[1200px] mx-auto">
         <div className="flex items-center justify-between mt-10 rounded-md py-2 px-4 mb-5 bg-gray-300">
           <div className="flex-1 flex items-center gap-8">
@@ -55,12 +73,16 @@ const AllBilling = () => {
               <input
                 type="text"
                 className="input input-bordered input-error h-[40px] w-[250px]"
-                placeholder="Type here"
+                placeholder="Search"
+                onChange={handleSearch}
               />
             </div>
           </div>
           <div className="flex-1 text-right">
-            <button onClick={handleAddNewBill} className="btn btn-sm bg-orange-500 hover:bg-orange-500 border-0">
+            <button
+              onClick={handleAddNewBill}
+              className="btn btn-sm bg-orange-500 hover:bg-orange-500 border-0"
+            >
               add new bill
             </button>
           </div>
@@ -86,24 +108,27 @@ const AllBilling = () => {
                   setDeleteId={setDeleteId}
                   addUpModal={addUpModal}
                   setAddUpModal={setAddUpModal}
-                  
+                  key={bill._id}
                 ></SingleBill>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-      <ReactPaginate previousLabel={'prev-'}
-        nextLabel={'-next'}
-        breakLabel={'...'}
-        pageCount={Math.ceil(billingList.length/10)}
+      <ReactPaginate
+        previousLabel={"<<"}
+        nextLabel={">>"}
+        breakLabel={"..."}
+        pageCount={Math.ceil(billingList.length / 10)}
         marginPagesDisplayed={2}
         onPageChange={handlePageClick}
-        containerClassName={'btn-group mx-auto w-max'}
-        pageClassName={'text-xl flex items-center mx-2'}
-        previousClassName={'text-xl flex items-center'}
-        nextClassName={'btn'}
-        breakClassName={'text-xl flex items-center'}
+        containerClassName={"btn-group mx-auto w-max mt-5"}
+        pageClassName={"text-xl flex items-center mx-2"}
+        previousClassName={
+          "text-xl flex items-center font-bold text-primary mr-2"
+        }
+        nextClassName={"text-xl flex items-center font-bold text-primary mr-2"}
+        breakClassName={"text-xl flex items-center"}
       ></ReactPaginate>
       {deleteId && (
         <DeleteBillingModal
@@ -115,7 +140,16 @@ const AllBilling = () => {
       )}
 
       {addUpModal && (
-        <AddUpdateBillingModal billingList={billingList} setBillingList={setBillingList} setReload={setReload} reload={reload} updateId={updateId} setUpdateId={setUpdateId} addUpModal={addUpModal} setAddUpModal={setAddUpModal}></AddUpdateBillingModal>
+        <AddUpdateBillingModal
+          billingList={billingList}
+          setBillingList={setBillingList}
+          setReload={setReload}
+          reload={reload}
+          updateId={updateId}
+          setUpdateId={setUpdateId}
+          addUpModal={addUpModal}
+          setAddUpModal={setAddUpModal}
+        ></AddUpdateBillingModal>
       )}
     </>
   );
