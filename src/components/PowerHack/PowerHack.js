@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AllBilling from "./AllBilling";
-import Header from "./Header";
-
 const PowerHack = () => {
 
   const navigate = useNavigate();
@@ -13,7 +11,7 @@ const PowerHack = () => {
     const email = userCredential?.email;
     const jwtToken = userCredential?.token;
 
-    fetch(`http://localhost:5000/isValidUser?email=${email}`, {
+    fetch(`http://localhost:5000/api/isValidUser?email=${email}`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${jwtToken}`,
@@ -38,7 +36,7 @@ const PowerHack = () => {
 
   return (
     <div>
-      <Header></Header>
+
       <AllBilling></AllBilling>
       
     </div>

@@ -27,7 +27,7 @@ const Register = () => {
     const password = data.password;
 
 
-    fetch('http://localhost:5000/registration',{
+    fetch('http://localhost:5000/api/registration',{
       method:'POST',
       headers:{
         "content-type": "application/json",

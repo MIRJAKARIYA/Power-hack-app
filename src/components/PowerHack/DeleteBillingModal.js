@@ -6,7 +6,7 @@ const DeleteBillingModal = ({ deleteId, setDeleteId, reload, setReload }) => {
   const handleDelete = () =>{
     const userCredential = JSON.parse(localStorage.getItem("UserCredential"));
     const jwtToken = userCredential?.token;
-    fetch(`http://localhost:5000/update-billing/${deleteId}`,{
+    fetch(`http://localhost:5000/api/update-billing/${deleteId}`,{
       method:"DELETE",
       headers:{
         authorization: `Bearer ${jwtToken}`

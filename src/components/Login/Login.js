@@ -17,7 +17,7 @@ const Login = () => {
     const email = data.email;
     const password = data.password;
 
-    fetch("http://localhost:5000/login", {
+    fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
