@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import AddUpdateBillingModal from "./AddUpdateBillingModal";
 import DeleteBillingModal from "./DeleteBillingModal";
 import Header from "./Header";
+import ReactPaginate from 'react-paginate';
 
 import SingleBill from "./SingleBill";
 
 const AllBilling = () => {
+ 
   const [updateId, setUpdateId] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [billingList, setBillingList] = useState([]);
   const [reload, setReload] = useState(false);
   const [addUpModal, setAddUpModal] = useState(false);
   const [api, setApi] = useState('');
+  const [pageCount, setPageCount] = useState(0);
+
+  const [pageData, setPageData] = useState([])
 
   useEffect(() => {
     fetch("http://localhost:5000/api/billing-list")
@@ -19,11 +24,24 @@ const AllBilling = () => {
       .then((data) => setBillingList(data));
   }, [reload]);
 
+  useEffect(()=>{
+    const x = pageCount*10;
+    const y = x+10;
+    const tenData= billingList.slice(x,y);
+    setPageData(tenData)
+
+  },[pageCount,billingList])
+
 
   const handleAddNewBill = () =>{
     setAddUpModal(!addUpModal)
     setUpdateId('add-Bill')
     setApi('')
+  }
+
+  const handlePageClick = (data) =>{
+    console.log(data.selected)
+    setPageCount(data.selected)
   }
 
   return (
@@ -61,20 +79,32 @@ const AllBilling = () => {
               </tr>
             </thead>
             <tbody>
-              {billingList.map((bill) => (
+              {pageData.map((bill) => (
                 <SingleBill
                   bill={bill}
                   setUpdateId={setUpdateId}
                   setDeleteId={setDeleteId}
                   addUpModal={addUpModal}
                   setAddUpModal={setAddUpModal}
+                  
                 ></SingleBill>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
+      <ReactPaginate previousLabel={'prev-'}
+        nextLabel={'-next'}
+        breakLabel={'...'}
+        pageCount={Math.ceil(billingList.length/10)}
+        marginPagesDisplayed={2}
+        onPageChange={handlePageClick}
+        containerClassName={'btn-group mx-auto w-max'}
+        pageClassName={'text-xl flex items-center mx-2'}
+        previousClassName={'text-xl flex items-center'}
+        nextClassName={'btn'}
+        breakClassName={'text-xl flex items-center'}
+      ></ReactPaginate>
       {deleteId && (
         <DeleteBillingModal
           reload={reload}
